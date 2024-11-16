@@ -27,8 +27,7 @@ jobs:
 
       - name: Build deployment
         run:
-          just build
-          just zip
+          just build zip
 
       - name: Setup FluentCI
         uses: fluentci-io/setup-fluentci@v5
