@@ -1,0 +1,40 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main  # Set a branch to deploy
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Change if you need git info
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Install Just
+        uses: extractions/setup-just@v2
+
+      - name: Build deployment
+        run:
+          just build
+          just zip
+
+      - name: Setup FluentCI
+        uses: fluentci-io/setup-fluentci@v5
+      - name: Deploy
+        run: fluentci run --wasm cloudflare pages_deploy deploy --project-name pdb2fasta-rust-wasm-example
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          
