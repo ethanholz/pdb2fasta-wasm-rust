@@ -1,6 +1,6 @@
 [package]
 name = "pdb2fasta-wasm-rust"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 
 [lib]
@@ -8,4 +8,11 @@ crate-type = ["cdylib"]
 
 [dependencies]
 knuckles-parse = { version = "0.2.0", default-features = false }
+phf = { version = "0.11.2", features=["macros"] }
 wasm-bindgen = "0.2.95"
+wee_alloc = "0.4.5"
+
+[profile.release]
+lto = true
+opt-level = "s"
+

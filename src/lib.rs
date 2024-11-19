@@ -1,38 +1,37 @@
+extern crate wee_alloc;
+
+#[global_allocator]
+static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+
 use knuckles_parse::records::Record;
-use std::collections::HashMap;
-use std::sync::OnceLock;
 use wasm_bindgen::prelude::*;
 
-fn terms_map() -> &'static HashMap<&'static str, &'static str> {
-    static TERMS: OnceLock<HashMap<&'static str, &'static str>> = OnceLock::new();
-    TERMS.get_or_init(|| {
-        let mut m = HashMap::new();
-        m.insert("ALA", "A");
-        m.insert("VAL", "V");
-        m.insert("PHE", "F");
-        m.insert("PRO", "P");
-        m.insert("MET", "M");
-        m.insert("ILE", "I");
-        m.insert("LEU", "L");
-        m.insert("ASP", "D");
-        m.insert("GLU", "E");
-        m.insert("LYS", "K");
-        m.insert("ARG", "R");
-        m.insert("SER", "S");
-        m.insert("THR", "T");
-        m.insert("TYR", "Y");
-        m.insert("HIS", "H");
-        m.insert("CYS", "C");
-        m.insert("ASN", "N");
-        m.insert("GLN", "Q");
-        m.insert("TRP", "W");
-        m.insert("GLY", "G");
-        m
-    })
-}
+static TERMS: phf::Map<&'static str, &'static str> = phf::phf_map! {
+    "ALA" => "A",
+    "VAL" => "V",
+    "PHE" => "F",
+    "PRO" => "P",
+    "MET" => "M",
+    "ILE" => "I",
+    "LEU" => "L",
+    "ASP" => "D",
+    "GLU" => "E",
+    "LYS" => "K",
+    "ARG" => "R",
+    "SER" => "S",
+    "THR" => "T",
+    "TYR" => "Y",
+    "HIS" => "H",
+    "CYS" => "C",
+    "ASN" => "N",
+    "GLN" => "Q",
+    "TRP" => "W",
+    "GLY" => "G",
+};
 
 fn aa3to1(aa: &str) -> &'static str {
-    terms_map().get(aa).copied().unwrap_or("X")
+    TERMS.get(aa).unwrap_or(&"X")
+    // terms_map().get(aa).copied().unwrap_or("X")
 }
 
 fn handle_record(
