@@ -19,14 +19,20 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
+      - name: Cache cargo binaries
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-bins-v1
+
       - name: Install cargo-binsall
         uses: cargo-bins/cargo-binstall@main
 
+      - name: Install just
+        run: cargo binstall -y just
+
       - name: Install wasm-pack
         run: cargo binstall -y wasm-pack
-
-      - name: Install Just
-        uses: extractions/setup-just@v2
 
       - name: Build deployment
         run:
