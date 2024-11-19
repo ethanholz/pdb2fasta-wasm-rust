@@ -1,8 +1,3 @@
-extern crate wee_alloc;
-
-#[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
 use knuckles_parse::records::Record;
 use wasm_bindgen::prelude::*;
 
